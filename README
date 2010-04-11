@@ -1,0 +1,27 @@
+PyWebShot
+=========
+
+Automatically generate thumbnails for 1 or more websites from the command line. Requires the python-gtkmozembed package.
+
+Ben Dowling - http://www.coderholic.com
+
+Usage
+-----
+pywebshot.py [options] url1 [url2 ... urlN]
+
+Options:
+  -h, --help            show this help message and exit
+  -s SCREEN, --screen=SCREEN
+                        Screen resolution at which to capture the webpage
+                        (default 1024x769)
+  -t THUMBNAIL, --thumbnail=THUMBNAIL
+                        Thumbnail resolution (default 350x200)
+  -d DELAY, --delay=DELAY
+                        Delay in seconds to wait after page load before taking
+                        the screenshot (default 0)
+Examples
+--------
+pywebshot.py google.com
+pywebshot.py google.com yahoo.com
+cat urls.txt | xargs ./pywebshot.py 
+pywebshot.py page_with_delayed_content.com -d10
