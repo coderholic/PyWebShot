@@ -1,5 +1,7 @@
 #!/usr/bin/env python
+# PyWebShot - create webpage thumbnails. Originally based on 
 # http://burtonini.com/computing/screenshot-tng.py
+# Ben Dowling - http://www.coderholic.com
 
 import os
 import sys
