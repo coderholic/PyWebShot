@@ -12,7 +12,7 @@ import urlparse
 from optparse import OptionParser
 
 class PyWebShot:
-	def __init__(self, urls, screen, thumbnail, delay):
+	def __init__(self, urls, screen, thumbnail, delay, outfile):
 		self.parent = gtk.Window(gtk.WINDOW_TOPLEVEL)
 		self.parent.set_border_width(10)
 		self.urls = urls
@@ -39,7 +39,10 @@ class PyWebShot:
 		
 		# Connect signal
 		self.widget.connect("net_stop", self.on_net_stop)
-
+		if outfile:
+			(self.outfile_base, ignore) = outfile.split('.png')
+		else:
+			self.outfile_base = None
 		self.parent.add(self.widget)
 		self.url_num = 0
 		self.load_next_url()
@@ -49,7 +52,6 @@ class PyWebShot:
 		if self.url_num > len(self.urls) - 1:
 			gtk.main_quit()
 			return
-		
 		self.current_url = self.urls[self.url_num]
 		self.countdown = self.delay
 		print "Loading " + self.current_url + "...", 
@@ -79,9 +81,14 @@ class PyWebShot:
 		pixbuf.get_from_drawable(window,self.widget.get_colormap(),0,0,0,0,width,height)
 		thumbnail = gtk.gdk.Pixbuf(gtk.gdk.COLORSPACE_RGB,False,8,self.t_x,self.t_y)
 		pixbuf.scale(thumbnail, 0, 0, self.t_x, self.t_y, 0, 0, self.scale, self.scale, gdk.INTERP_HYPER)
-		parts = urlparse.urlsplit(self.current_url)
-		filename = parts.netloc + parts.path.replace('/', '.') + ".png"
-		
+		if self.outfile_base:
+			if len(self.urls) == 1:
+				filename = "%s.png" % (self.outfile_base)
+			else:
+				filename = "%s-%d.png" % (self.outfile_base, self.url_num)
+		else:
+			parts = urlparse.urlsplit(self.current_url)
+			filename = parts.netloc + parts.path.replace('/', '.') + ".png"
 		thumbnail.save(filename,"png")
 		print "saved as " + filename
 		return True
@@ -96,10 +103,11 @@ if __name__ == "__main__":
 	parser.add_option('-s', '--screen', action='store', type='string', help='Screen resolution at which to capture the webpage (default %default)', default="1024x769")
 	parser.add_option('-t', '--thumbnail', action='store', type='string', help='Thumbnail resolution (default %default)', default="350x200")
 	parser.add_option('-d', '--delay', action='store', type='int', help='Delay in seconds to wait after page load before taking the screenshot (default %default)', default=0)
+	parser.add_option('-f', '--filename', action='store', type='string', help='PNG output filename with .png extension, otherwise default is based on url name and given a .png extension')
 	(options, args) = parser.parse_args()
 	if len(args) == 0:
 		parser.error('No URL specified')
 	
-	window = PyWebShot(urls=args, screen=options.screen, thumbnail=options.thumbnail, delay=options.delay)
+	window = PyWebShot(urls=args, screen=options.screen, thumbnail=options.thumbnail, delay=options.delay, outfile=options.filename)
 	window.parent.connect("destroy", __windowExit)
 	gtk.main()
