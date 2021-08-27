@@ -18,7 +18,7 @@ class PyWebShot:
 		self.urls = urls
 		self.delay = delay
 
-		# Get resoltion information
+		# Get resolution information
 		(x,y) = screen.split('x')
 		x = int(x)
 		y = int(y)
