@@ -1,4 +1,4 @@
-PyWebShot
+PyWebShot-Docs
 =========
 
 Automatically generate thumbnails for 1 or more websites from the command line. Requires the python-gtkmozembed package.
